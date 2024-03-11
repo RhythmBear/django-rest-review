@@ -7,15 +7,24 @@ from products.models import Product
 from products.serializers import ProductSerializer
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 def api_home(request, *args, **kwargs):
-    instance = Product.objects.all().order_by('?').first()
-    data = {}
-
-    if instance:
-        # data = model_to_dict(instance, fields=['id', 'title','content', 'price'])
-        # Serialization model_instace >> PythonDictionary >> return json
-
-        data = ProductSerializer(instance).data
+    
+    # POST
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        print(serializer.data)
         
-    return Response(data)
+        return Response(serializer.data)
+
+
+    return Response({'invalid': "Bad Data Provided"}, status=400)
+
+    # # Get
+    # instance = Product.objects.all().order_by('?').first()
+    # data = {}
+
+    # if instance:
+    #     data = ProductSerializer(instance).data
+        
+    # return Response(data)
