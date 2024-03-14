@@ -1,7 +1,7 @@
 import requests
 
 # Server Address
-api_endpoint = "http://localhost:8000/api/"
+api_endpoint = "http://localhost:8000/api/products/"
 
 data = {
     "title": "Product 105"
@@ -10,4 +10,4 @@ data = {
 # Get Request for product details
 res = requests.post(api_endpoint, json=data 
                         )
-print(res.text)
+print(res.json())

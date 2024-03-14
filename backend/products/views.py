@@ -4,21 +4,23 @@ from .models import Product
 from .serializers import ProductSerializer
 
 
-class ProductCreateAPIView(generics.CreateAPIView):
+class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     def perform_create(self, serializer):
+        # serializer.save(user=self.request.user)
+        print("I'm Here!!!!!!!")
         title = serializer.validated_data.get('title')
         content = serializer.validated_data.get('content') or None
-
-        if not content:
-            content = f"This is the content of {title}"
-
+        if content is None:
+            content = title
         serializer.save(content=content)
-        # Send a Django signal
+        # send a Django signal
+        print(serializer.validated_data)
 
-product_create_view = ProductCreateAPIView.as_view()
+
+product_list_create_view = ProductListCreateAPIView.as_view()
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
@@ -29,4 +31,27 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 product_detail_view = ProductDetailAPIView.as_view()
 
 
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    # lookup Field = 'pk'   
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        if not instance.content:
+            instance.content = instance.title
     
+product_update_view = ProductUpdateAPIView.as_view()
+
+
+class ProductDeleteAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    # lookup Field = 'pk'
+
+    def perform_destroy(self, instance):
+        # instance 
+        super().perform_destroy(instance)
+
+product_delete_view = ProductDeleteAPIView.as_view()
