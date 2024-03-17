@@ -4,7 +4,8 @@ import requests
 api_endpoint = "http://localhost:8000/api/products/"
 
 data = {
-    "title": "Product 105"
+    "title": "Product 105",
+    'content': "Content of Product 105"
 }
 
 # Get Request for product details
