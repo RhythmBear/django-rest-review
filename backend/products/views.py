@@ -1,26 +1,30 @@
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins, permissions, authentication
 
 from .models import Product
 from .serializers import ProductSerializer
 
 
-# class ProductListCreateAPIView(generics.ListCreateAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
-#     def perform_create(self, serializer):
-#         # serializer.save(user=self.request.user)
-#         print("I'm Here!!!!!!!")
-#         title = serializer.validated_data.get('title')
-#         content = serializer.validated_data.get('content') or None
-#         if content is None:
-#             content = title
-#         serializer.save(content=content)
-#         # send a Django signal
-#         print(serializer.validated_data)
+    authentication_classes = [authentication.SessionAuthentication]
+    # Ensure that the user has persmission
+    permission_classes = [permissions.DjangoModelPermissions]
+
+    def perform_create(self, serializer):
+        # serializer.save(user=self.request.user)
+        
+        title = serializer.validated_data.get('title')
+        content = serializer.validated_data.get('content') or None
+        if content is None:
+            content = title
+        serializer.save(content=content)
+        # send a Django signal
+        print(serializer.validated_data)
 
 
-# product_list_create_view = ProductListCreateAPIView.as_view()
+product_list_create_view = ProductListCreateAPIView.as_view()
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
