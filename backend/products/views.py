@@ -1,6 +1,7 @@
 from rest_framework import generics, mixins, permissions, authentication
 
 from .models import Product
+from api.authentication import TokenAuthentication
 from .permissions import IsStaffEditorPermission
 from .serializers import ProductSerializer
 
@@ -9,7 +10,10 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        TokenAuthentication
+                              ]
     # Ensure that the user has persmission
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
@@ -30,6 +34,12 @@ product_list_create_view = ProductListCreateAPIView.as_view()
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        TokenAuthentication
+                              ]
+    # Ensure that the user has persmission
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     
     # lookup Field = 'pk'
 
