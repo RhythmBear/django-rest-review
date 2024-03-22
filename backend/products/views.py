@@ -1,6 +1,7 @@
 from rest_framework import generics, mixins, permissions, authentication
 
 from .models import Product
+from .permissions import IsStaffEditorPermission
 from .serializers import ProductSerializer
 
 
@@ -10,7 +11,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 
     authentication_classes = [authentication.SessionAuthentication]
     # Ensure that the user has persmission
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)
